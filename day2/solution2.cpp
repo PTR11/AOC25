@@ -4,7 +4,6 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
 std::vector<std::string> split(const std::string &str, char delimiter)
@@ -19,20 +18,19 @@ std::vector<std::string> split(const std::string &str, char delimiter)
     return tokens;
 }
 
-std::vector<std::string> splitIntoParts(const std::string &str, int x)
+bool isRepeatedPattern(const std::string &number, int len)
 {
-    std::vector<std::string> parts;
-    size_t position = 0;
-    while (position < str.size())
+    for (size_t i = len; i < number.size(); ++i)
     {
-        parts.push_back(str.substr(position, x));
-        position += x;
+        if (number[i] != number[i % len])
+            return false;
     }
-    return parts;
+    return true;
 }
 
 int main()
 {
+
     std::ifstream file("inputSolution.txt");
     if (!file.is_open())
     {
@@ -42,6 +40,7 @@ int main()
 
     std::string line;
     long long result = 0;
+
     while (std::getline(file, line))
     {
         std::vector<string> intervals = split(line, ',');
@@ -52,34 +51,20 @@ int main()
             long long upperLimit = stoll(limits.at(1));
             for (long long i = lowerLimit; i <= upperLimit; i++)
             {
-                string number = to_string(i);
-                string tmp = "";
-                bool findInvalid = false;
-                for (char c : number)
+                auto number = to_string(i);
+                for (size_t len = 1; len <= number.size() / 2; ++len)
                 {
-                    tmp += c;
-                    if (tmp.size() == number.size())
-                    {
-                        break;
-                    }
-                    std::vector<std::string> parts = splitIntoParts(number, tmp.size());
-                    bool allEqual = std::all_of(parts.begin(), parts.end(), [&](const std::string &part)
-                                                { return part == parts[0]; });
-                    if (allEqual)
+                    if (number.size() % len != 0)
+                        continue;
+                    if (isRepeatedPattern(number, len))
                     {
                         result += i;
-                        findInvalid = true;
                         break;
                     }
-                }
-                if (findInvalid)
-                {
-                    continue;
                 }
             }
         }
     }
     file.close();
-
     std::cout << "Result:" << result << std::endl;
 }
