@@ -62,7 +62,7 @@ int main()
         {
             if (cell == "@")
             {
-                // matrix[rowIndex][colIndex] = "C";
+                matrix[rowIndex][colIndex] = "C";
                 auto neighbors = get3x3Matrix(matrix, rowIndex, colIndex);
                 neighbors[4] = ".";
                 int countPapers = std::count(neighbors.begin(), neighbors.end(), "@");
